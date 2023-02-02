@@ -26,14 +26,20 @@ const mockRequisicaoSucesso = (response) => {
 }
 
 const mockRequisiçãoFalha = () => {
-    return new Promise((_, reject) => { 
+    return new Promise((_, reject) => {
         setTimeout(() => {
             reject()
         }, 200)
     })
 }
 
+
 describe("repositiorio/lance", () => {
+
+    beforeEach(() => {
+        apiLeiloes.get.mockClear();
+    })
+
     describe("obtemLeiloes", () => {
         it("deve retornar lista de leiloes", async () => {
 
@@ -41,6 +47,9 @@ describe("repositiorio/lance", () => {
 
             const leiloes = await obtemLeiloes();
             expect(leiloes).toEqual(mockLeiloes);
+
+            expect(apiLeiloes.get).toHaveBeenCalledWith("/leiloes");
+            expect(apiLeiloes.get).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -51,6 +60,9 @@ describe("repositiorio/lance", () => {
 
             const leiloes = await obtemLeiloes();
             expect(leiloes).toEqual([]);
+
+            expect(apiLeiloes.get).toHaveBeenCalledWith("/leiloes");
+            expect(apiLeiloes.get).toHaveBeenCalledTimes(1);
         });
     });
 });
