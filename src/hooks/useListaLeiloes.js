@@ -13,5 +13,5 @@ export default function useListaLeiloes() {
     atualizaLeiloes();
   }, []);
 
-  return [ leiloes, atualizaLeiloes ];
+  return [ atualizaLeiloes, leiloes ];
 }

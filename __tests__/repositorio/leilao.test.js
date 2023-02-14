@@ -1,4 +1,4 @@
-import { obtemLeiloes } from "../../src/repositorio/leilao";
+import { obtemLeilao, obtemLeiloes } from "../../src/repositorio/leilao";
 import apiLeiloes from "../../src/servicos/apiLeiloes"
 
 jest.mock("../../src/servicos/apiLeiloes.js");
@@ -25,7 +25,7 @@ const mockRequisicaoSucesso = (response) => {
     });
 }
 
-const mockRequisiçãoFalha = () => {
+const mockRequisicaoFalha = () => {
     return new Promise((_, reject) => {
         setTimeout(() => {
             reject()
@@ -33,8 +33,7 @@ const mockRequisiçãoFalha = () => {
     })
 }
 
-
-describe("repositiorio/lance", () => {
+describe("repositiorio/leilao", () => {
 
     beforeEach(() => {
         apiLeiloes.get.mockClear();
@@ -51,12 +50,10 @@ describe("repositiorio/lance", () => {
             expect(apiLeiloes.get).toHaveBeenCalledWith("/leiloes");
             expect(apiLeiloes.get).toHaveBeenCalledTimes(1);
         });
-    });
 
-    describe("obtemLeiloes", () => {
         it("deve retornar lista de leiloes", async () => {
 
-            apiLeiloes.get.mockImplementation(() => mockRequisiçãoFalha())
+            apiLeiloes.get.mockImplementation(() => mockRequisicaoFalha())
 
             const leiloes = await obtemLeiloes();
             expect(leiloes).toEqual([]);
@@ -65,4 +62,22 @@ describe("repositiorio/lance", () => {
             expect(apiLeiloes.get).toHaveBeenCalledTimes(1);
         });
     });
+
+    describe("obtemLeilao", () => {
+
+        it("deve retornar um leilão com o id especificado", async () => {
+            apiLeiloes.get.mockImplementation(() => mockRequisicaoSucesso(mockLeiloes[0]));
+
+            const leilao = await obtemLeilao(1);
+            expect(leilao).toEqual(mockLeiloes[0]);
+        });
+
+        if("deve retornar um objeto vazio em caso de falha", async () => {
+            apiLeiloes.get.mockImplementation(() => mockRequisicaoFalha());
+
+            const leilao = await obtemLeilao(1);
+            expect(leilao).toEqual({});
+        });
+    });
+
 });
